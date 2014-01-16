@@ -1,16 +1,14 @@
-#Sales tax
-# class Cart
+	def fill_cart
+		another_item = "y"
+		while another_item == "y" 
+			get_line
+			puts "Another item? (y/n)"
+			another_item = gets.chomp
+		end
+	end
 
 
-
-	# def get_items
-	# 	puts "Another item? (y/n)"
-	# 	another_item? = gets.chomp
-	# 	if another_item = "y" then get_line
-	# end
-
-
-#	def get_line
+	def get_line
 		qty = 0
 		item_name = ""
 		is_imported = false
@@ -22,6 +20,7 @@
 		input_ary = keyed_input.split(" ") #convert to array <spc> delimited
 		
 		qty = keyed_input[0].to_i
+
 		if input_ary.include?("imported") 
 			is_imported = true
 		end
@@ -31,13 +30,17 @@
 		end
 
 		price = input_ary[input_ary.index("at") + 1].to_f
-		puts price
-		puts price.class
 
-		puts is_imported
-		puts is_exempt
-
-
-
+		#construct item object
 		
+	end
 
+# class CartItem
+# 	def initialize(qty, name, is_imported, is_exempt, price)
+# 	end
+# end
+
+#item 1 = CartItem.new(2, book, :imported => true, :exempt => true, 12.49)
+
+
+fill_cart
