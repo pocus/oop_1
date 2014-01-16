@@ -13,13 +13,28 @@
 class Taxer
 	
 	def initialize
-		@basic_rate  = 0.05
+		@basic_rate  = 0.10
+		@duty_rate = 0.05
+		@tax_collected = 0.0
 	end
 
-	
-	def run(item)
-		price = item.price
-		puts price * @basic_rate
+	def smart_run(item)
+		if item.is_imported
+			puts "calculating duty ..."
+			@tax_collected = item.price * @duty_rate
+			puts @tax_collected
+		end
+
+		if item.is_exempt
+			puts "exempt but duty is "
+			puts @tax_collected
+			return @tax_collected
+		end
+
+		puts "tax collected is"
+		
+		@tax_collected = @tax_collected + (item.price * @basic_rate)
+		puts @tax_collected
 	end
 end
 
@@ -28,15 +43,20 @@ end
 # end
 
 class CartItem
-	
-	attr_accessor :qty, :name, :price, :is_imported, :is_exempt
+
+	attr_reader :qty, :name, :price, :is_imported, :is_exempt #why does @ not work?
+
+#instance variables are vital to the functioning of a object
+#without object variables you'd only have method variables which die
+#note that attr_reader / access takes whatever variables you put in and adds the "@" because the purpose of the
+#attr snippets is to create readeable / writable instance variables, by definition.
 
 	def initialize
- 		# @qty = 0
- 		# @name = ""
- 		# @is_imported = false
- 		# @is_exempt = false 
- 		# @price = 0.0
+ 		@qty = 0
+ 		@name = ""
+ 		@is_imported = false
+ 		@is_exempt = false 
+ 		@price = 0.0
 
 		puts "Input cart item:"
 		keyed_input = gets.chomp #gives a string
@@ -46,7 +66,9 @@ class CartItem
 
 		if input_ary.include?("imported") 
 			@is_imported = true
-		elsif input_ary.include?("pills") 
+		end
+
+		if input_ary.include?("pills") 
 			@is_exempt = true
 		end
 
@@ -56,7 +78,8 @@ class CartItem
  	end
 
  	def write
- 		puts @qty #aauggggh remember that @var is the actual name
+ 		puts "no at #{qty}" #aauggggh remember that @var is the actual name
+ 		puts @qty
  		puts @name
  		puts @is_exempt
  		puts @is_imported
@@ -65,6 +88,6 @@ class CartItem
 end
 
 book = CartItem.new
-book.write
+#book.write
 taxer = Taxer.new
-taxer.run(book)
+taxer.smart_run(book)
