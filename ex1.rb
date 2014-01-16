@@ -11,7 +11,7 @@ end
 
 class Student < Person
 	def learn
-		puts "I get it"
+		puts "I get it!"
 	end
 end
 
@@ -26,3 +26,10 @@ Chris.greet
 
 Cristina = Student.new("Cristina")
 Cristina.greet
+
+Chris.teach
+Cristina.learn
+
+Cristina.teach
+#Doesn't work because the "teach" method is part of the Instructor class and therefore not accessible to Cristina, which 
+#is an object of the Student class. 
