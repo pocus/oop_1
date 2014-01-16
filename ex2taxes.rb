@@ -10,14 +10,33 @@
 	# 	end
 	# end
 
- class CartItem #could you do a hash to represent each item?
+class Taxer
+	
+	def initialize
+		@basic_rate  = 0.05
+	end
 
- 	def initialize
- 		@qty = 0
- 		@name = ""
- 		@is_imported = false
- 		@is_exempt = false 
- 		@price = 0.0
+	
+	def run(item)
+		price = item.price
+		puts price * @basic_rate
+	end
+end
+
+# class DutyTaxer < BasicTaxer
+# 	@duty_rate = 0.05
+# end
+
+class CartItem
+	
+	attr_accessor :qty, :name, :price, :is_imported, :is_exempt
+
+	def initialize
+ 		# @qty = 0
+ 		# @name = ""
+ 		# @is_imported = false
+ 		# @is_exempt = false 
+ 		# @price = 0.0
 
 		puts "Input cart item:"
 		keyed_input = gets.chomp #gives a string
@@ -27,9 +46,7 @@
 
 		if input_ary.include?("imported") 
 			@is_imported = true
-		end
-
-		if input_ary.include?("pills") 
+		elsif input_ary.include?("pills") 
 			@is_exempt = true
 		end
 
@@ -45,38 +62,9 @@
  		puts @is_imported
  		puts @price
  	end
-
 end
 
 book = CartItem.new
 book.write
-
-
-# Taxer.run("CartItem")
-
-# finalprice = price + Taxer("price")
-
-
-
-
-# class Taxer
-# 	attr_accessor :x, :y
-# 	@basic_rate  = 0.05
-
-
-# 	def initialize 
-	
-# 	def run(price)
-# 		price * rate
-# 	end
-
-# end
-
-# class DutyTaxer < BasicTaxer
-# 	@duty_rate = 0.05
-# end
-
-# #item 1 = CartItem.new(2, book, :imported => true, :exempt => true, 12.49)
-
-
-
+taxer = Taxer.new
+taxer.run(book)
