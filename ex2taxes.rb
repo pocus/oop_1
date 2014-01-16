@@ -1,11 +1,36 @@
-	def fill_cart
-		another_item = "y"
-		while another_item == "y" 
-			get_line
-			puts "Another item? (y/n)"
-			another_item = gets.chomp
-		end
-	end
+
+# cart_ary = []
+
+	# def fill_cart
+	# 	another_item = "y"
+	# 	while another_item == "y" 
+	# 		get_line
+	# 		puts "Another item? (y/n)"
+	# 		another_item = gets.chomp
+	# 	end
+	# end
+
+ class CartItem #could you do a hash to represent each item?
+
+ 	def initialize(qty, name, is_imported, is_exempt, price)
+ 		@qty = qty
+ 		@name = name
+ 		@is_imported = is_imported
+ 		@is_exempt = is_exempt
+ 		@price = price
+ 	end
+
+ 	def write
+ 		puts @qty #aauggggh remember that @var is the actual name
+ 		puts @name
+ 		puts @is_exempt
+ 		puts @is_imported
+ 		puts @price
+ 	end
+
+end
+
+
 
 
 	def get_line
@@ -18,6 +43,7 @@
 		puts "Input cart item:"
 		keyed_input = gets.chomp #gives a string
 		input_ary = keyed_input.split(" ") #convert to array <spc> delimited
+
 		
 		qty = keyed_input[0].to_i
 
@@ -29,18 +55,43 @@
 			is_exempt = true
 		end
 
+		name = input_ary[1..input_ary.index("at")-1]
 		price = input_ary[input_ary.index("at") + 1].to_f
 
-		#construct item object
 		
+		$cartitem = CartItem.new(qty,name,is_imported,is_exempt,price)
+
+
+
 	end
 
-# class CartItem
-# 	def initialize(qty, name, is_imported, is_exempt, price)
+# Taxer.run("CartItem")
+
+# finalprice = price + Taxer("price")
+
+
+
+
+# class Taxer
+# 	attr_accessor :x, :y
+# 	@basic_rate  = 0.05
+
+
+# 	def initialize 
+	
+# 	def run(price)
+# 		price * rate
 # 	end
+
 # end
 
-#item 1 = CartItem.new(2, book, :imported => true, :exempt => true, 12.49)
+# class DutyTaxer < BasicTaxer
+# 	@duty_rate = 0.05
+# end
+
+# #item 1 = CartItem.new(2, book, :imported => true, :exempt => true, 12.49)
+
+get_line
+$cartitem.write
 
 
-fill_cart
