@@ -8,23 +8,17 @@ class Taxer
 	def calculate(item)
 		tax_collected = 0.0 #shouldn't persist for the life of the Taxer object
 
-		#calculate duty
-		if item.is_imported
-			tax_collected = item.price * @duty_rate
-		end
-
-		#if tax exempt, return with calculated duty
+		if item.is_imported then tax_collected = item.price * @duty_rate end
+		
 		if item.is_exempt
 			return tax_collected
+		else
+			tax_collected = tax_collected + (item.price * @basic_rate)		
 		end
-		
-		#dutiable and taxable
-		tax_collected = tax_collected + (item.price * @basic_rate)		
 	end
 end
 
 class CartItem
-
 	attr_reader :qty, :name, :price, :is_imported, :is_exempt 
 
 	#instance variables are vital to the functioning of a object
@@ -47,9 +41,9 @@ class CartItem
 			@is_imported = true
 		end
 
-		if input_ary.include?("pills")
+		if input_ary.include?("pills") 
 			@is_exempt = true
-		elsif input_ary.include?("chocolate")
+		elsif input_ary.include?("chocolates")
 			@is_exempt = true
 		elsif input_ary.include?("book")
 			@is_exempt = true
@@ -63,20 +57,34 @@ class CartItem
 
 end
 
-taxer = Taxer.new
+class Receipt
 
-	@cart_ary = []
-	@items_total = 0.0
-	@total_taxes = 0.0
-	@balance_due = 0.0
+	def initialize(cart_ary)
+		@taxer = Taxer.new
 
-	@cart_ary[0] = CartItem.new("1 book at 12.49")
-	@cart_ary[1] = CartItem.new("1 music CD at 14.99")
-	@cart_ary[2] = CartItem.new("1 chocolate bar at 0.85")
+		items_total = 0.0
+		total_taxes = 0.0
+		balance_due = 0.0
+		
+		cart_ary.each {|item| total_taxes = total_taxes + @taxer.calculate(item)}
+		cart_ary.each {|item| items_total = items_total + item.price}
+		cart_ary.each {|item| puts "#{item.qty} ... #{item.name} ... #{item.price + @taxer.calculate(item)}" }
+		#@cart_ary.each {|item| @balance_due = @items_total + item.price}
 
-	@cart_ary.each {|item| @total_taxes = @total_taxes + taxer.calculate(item)}
-	@cart_ary.each {|item| @items_total = @items_total + item.price}
-	#@cart_ary.each {|item| @balance_due = @items_total + item.price}
+		puts "Sales taxes: #{total_taxes}"
+		puts "Total: #{items_total + total_taxes}"
 
-	puts "total_taxes is #{@total_taxes}"
-	puts "@balance_due is #{@items_total + @total_taxes}"
+	end
+
+end
+
+
+cart_ary = []
+cart_ary[0] = CartItem.new("1 imported bottle of perfume at 27.99")
+cart_ary[1] = CartItem.new("1 bottle of perfume at 18.99")
+cart_ary[2] = CartItem.new("1 packet of headache pills at 9.75")
+cart_ary[3] = CartItem.new("1 box of imported chocolates at 11.25")
+
+
+receipt = Receipt.new(cart_ary)
+
