@@ -3,8 +3,7 @@ class Taxer
 	def initialize
 		@basic_rate  = 0.10
 		@duty_rate = 0.05
-		@nearest = 20.0
-	
+		@nearest = 20.0	
 	end
 
 	def calculate(item)
@@ -69,7 +68,6 @@ class Receipt
 
 		items_total = 0.0
 		total_taxes = 0.0
-		balance_due = 0.0
 		
 		cart_ary.each {|item| total_taxes = total_taxes + @taxer.calculate(item)}
 		cart_ary.each {|item| items_total = items_total + item.price}
