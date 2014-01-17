@@ -3,19 +3,22 @@ class Taxer
 	def initialize
 		@basic_rate  = 0.10
 		@duty_rate = 0.05
+		@nearest = 20.0
+	
 	end
 
 	def calculate(item)
-		tax_collected = 0.0 #shouldn't persist for the life of the Taxer object
-
-		if item.is_imported then tax_collected = item.price * @duty_rate end
+		tax_collected = 0.00 #shouldn't persist for the life of the Taxer object
+		if item.is_imported then tax_collected = (item.price * @duty_rate * @nearest).ceil / @nearest end
 		
 		if item.is_exempt
-			return tax_collected
-		else
-			tax_collected = tax_collected + (item.price * @basic_rate)		
+			tax_collected
+		elsif !item.is_exempt
+			tax_collected = tax_collected + ((item.price * @basic_rate * @nearest).ceil / @nearest)
+			tax_collected.round(2)
 		end
 	end
+
 end
 
 class CartItem
@@ -45,6 +48,8 @@ class CartItem
 			@is_exempt = true
 		elsif input_ary.include?("chocolates")
 			@is_exempt = true
+		elsif input_ary.include?("chocolate")
+			@is_exempt = true
 		elsif input_ary.include?("book")
 			@is_exempt = true
 		end
@@ -68,11 +73,10 @@ class Receipt
 		
 		cart_ary.each {|item| total_taxes = total_taxes + @taxer.calculate(item)}
 		cart_ary.each {|item| items_total = items_total + item.price}
-		cart_ary.each {|item| puts "#{item.qty} ... #{item.name} ... #{item.price + @taxer.calculate(item)}" }
-		#@cart_ary.each {|item| @balance_due = @items_total + item.price}
+		cart_ary.each {|item| puts "#{item.qty} #{item.name.join(" ")} : #{(item.price + @taxer.calculate(item)).round(2) }" }
 
-		puts "Sales taxes: #{total_taxes}"
-		puts "Total: #{items_total + total_taxes}"
+		puts "Sales taxes: #{total_taxes.round(2)}"
+		puts "Total: #{(items_total + total_taxes).round(2)}"
 
 	end
 
@@ -80,10 +84,18 @@ end
 
 
 cart_ary = []
+
 cart_ary[0] = CartItem.new("1 imported bottle of perfume at 27.99")
 cart_ary[1] = CartItem.new("1 bottle of perfume at 18.99")
 cart_ary[2] = CartItem.new("1 packet of headache pills at 9.75")
 cart_ary[3] = CartItem.new("1 box of imported chocolates at 11.25")
+
+# cart_ary[0] = CartItem.new("1 book at 12.49")
+# cart_ary[1] = CartItem.new("1 music CD at 14.99")
+# cart_ary[2] = CartItem.new("1 chocolate bar at 0.85")
+
+# cart_ary[0] = CartItem.new("1 imported box of chocolates at 10.00")
+# cart_ary[1] = CartItem.new("1 imported bottle of perfume at 47.50")
 
 
 receipt = Receipt.new(cart_ary)
